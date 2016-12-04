@@ -13,16 +13,33 @@ library(sand)
 
 
 # Define UI for application that draws a histogram
-ui <- fluidPage(
+ui <- navbarPage("Análise de Redes Sociais - GIARS",
   
-  
+  tabPanel("Apresentação",
+           sidebarLayout(
+             sidebarPanel(
+               img(src="http://www.giars.ufmg.br/images/logo.png", height=119, width=250)
+             ),
+             mainPanel(
+              h1("Aplicativo de Análise de Redes Sociais - GIARS"),
+              
+              p("Este é um aplicativo de testes de Análise de Redes Sociais desenvolvido 
+                por Neylson Crepalde e pelo GIARS (Grupo Interdisciplinar de Pesquisa em Análise
+                de Redes Sociais). Seu objetivo é facilitar o aprendizado e fomentar o uso 
+                de ferramentas de ARS no Brasil."),
+              br(),
+              p("Este aplicativo está em desenvolvimento!")
+             )
+           )),             
+    
    # Application title
-   titlePanel("Análise de Redes Sociais - Em Desenvolvimento"),
+   #titlePanel("Análise de Redes Sociais"),
    
-   # Sidebar with a slider input for number of bins 
+  tabPanel("Rede de Lazega", 
+  # Sidebar with a slider input for number of bins 
    sidebarLayout(
       sidebarPanel(
-         img(src="http://www.giars.ufmg.br/images/logo.png", height=119, width=250),
+        img(src="http://www.giars.ufmg.br/images/logo.png", height=119, width=250),
          helpText("Trabalhando com a rede de advogados de E. Lazega."),
          textInput("text", label = "Defina o título da rede", value = "Advogados (Lazega)"),
          selectInput("algoritmo", label = "Defina o algoritmo de visualização",
@@ -45,7 +62,7 @@ ui <- fluidPage(
          plotOutput("net")
       )
    )
-)
+))
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {

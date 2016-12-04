@@ -22,6 +22,7 @@ ui <- fluidPage(
    # Sidebar with a slider input for number of bins 
    sidebarLayout(
       sidebarPanel(
+         img(src="http://www.giars.ufmg.br/images/logo.png", height=119, width=250),
          helpText("Trabalhando com a rede de advogados de E. Lazega."),
          textInput("text", label = "Defina o título da rede", value = "Advogados (Lazega)"),
          selectInput("algoritmo", label = "Defina o algoritmo de visualização",

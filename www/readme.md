@@ -1,0 +1,1 @@
+Imagens da aplicação.

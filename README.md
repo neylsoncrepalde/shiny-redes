@@ -1,4 +1,4 @@
-# Shiny-Redes
+# Shiny-Redes - Em desenvolvimento
 Uma aplicação Shiny para Análise de Redes Sociais. Para utilizar é preciso ter instalado o R e o pacote Shiny.
 Para instalar o shiny use `install.packages("shiny", dependencies = T)`.
 

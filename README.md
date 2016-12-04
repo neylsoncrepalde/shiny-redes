@@ -6,4 +6,4 @@ Para iniciar a aplicação, use `runGitHub("shiny-redes","neylsoncrepalde")`. D�
 
 Elaboração: [Neylson Crepalde](https://www.facebook.com/neylson.crepalde).
 
-**[GIARS](http://www.giars.ufmg.br) - UFMG**
+**[GIARS](http://www.giars.ufmg.br) (Grupo Interdisciplinar de Pesquisa em Análise de Redes Sociais) - UFMG**

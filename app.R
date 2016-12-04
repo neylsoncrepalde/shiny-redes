@@ -17,7 +17,7 @@ ui <- fluidPage(
   
   
    # Application title
-   titlePanel("Análise de Redes Sociais"),
+   titlePanel("Análise de Redes Sociais - Em Desenvolvimento"),
    
    # Sidebar with a slider input for number of bins 
    sidebarLayout(

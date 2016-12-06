@@ -21,14 +21,14 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS",
                img(src="http://www.giars.ufmg.br/images/logo.png", height=119, width=250)
              ),
              mainPanel(
-              h1("Aplicativo de Análise de Redes Sociais - GIARS"),
+              h1("Aplicação de Análise de Redes Sociais - GIARS"),
               
-              p("Este é um aplicativo de testes de Análise de Redes Sociais desenvolvido 
+              p("Esta é uma aplicação de testes de Análise de Redes Sociais desenvolvido 
                 por Neylson Crepalde e pelo GIARS (Grupo Interdisciplinar de Pesquisa em Análise
                 de Redes Sociais). Seu objetivo é facilitar o aprendizado e fomentar o uso 
                 de ferramentas de ARS no Brasil."),
               br(),
-              p("Este aplicativo está em desenvolvimento!")
+              p("Esta aplicação está em desenvolvimento!")
              )
            )),             
     
@@ -82,9 +82,10 @@ server <- function(input, output) {
     escore = switch(input$metrica,
                     "Nenhum" = 15,
                     "Centralidade de Grau" = degree(dataInput()),
-                    "Centralidade de Intermediação" = betweenness(dataInput()),
-                    "Centralidade de Proximidade" = closeness(dataInput()),
-                    "Constraint" = constraint(dataInput()))
+                    "Centralidade de Intermediação" = ( betweenness(dataInput())/2 ),
+                    "Centralidade de Proximidade" = (closeness(dataInput())*10 ),
+                    "Constraint" = constraint( delete_vertices(dataInput(), c("V23","V8") ))
+                    )
     
     
       plot.igraph(dataInput(), layout=algo, vertex.size=escore, 

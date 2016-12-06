@@ -13,12 +13,13 @@ library(sand)
 
 
 # Define UI for application that draws a histogram
-ui <- navbarPage("Análise de Redes Sociais - GIARS",
+ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.css",
                  
-                 tabPanel("Apresentação",
+                 tabPanel("Apresentação", 
                           sidebarLayout(
-                            sidebarPanel(
-                              img(src="http://www.giars.ufmg.br/images/logo.png", height=119, width=250)
+                            sidebarPanel(style = "background-color: #BA1723;",
+                                         
+                              img(src="http://www.giars.ufmg.br/images/logo.png", height=107, width=225)
                             ),
                             mainPanel(
                               h1("Aplicação de Análise de Redes Sociais - GIARS"),
@@ -38,8 +39,9 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS",
                  tabPanel("Rede de Lazega", 
                           # Sidebar with a slider input for number of bins 
                           sidebarLayout(
-                            sidebarPanel(
-                              img(src="http://www.giars.ufmg.br/images/logo.png", height=119, width=250),
+                            sidebarPanel(style = "background-color: #BA1723;",
+                                         
+                              img(src="http://www.giars.ufmg.br/images/logo.png", height=107, width=225),
                               helpText("Trabalhando com a rede de advogados de E. Lazega."),
                               textInput("text", label = "Defina o título da rede", value = "Advogados - Componente Principal"),
                               selectInput("algoritmo", label = "Defina o algoritmo de visualização",

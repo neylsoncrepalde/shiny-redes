@@ -68,8 +68,8 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS",
 server <- function(input, output) {
    
   dataInput = reactive({
-    lazega = upgrade_graph(lazega)
-    lazega = delete_vertices(lazega, c("V23","V8"))
+    lazega = upgrade_graph(lazega),
+    lazega = delete_vertices(lazega, c(8,23))
   })
   
   output$net <- renderPlot({

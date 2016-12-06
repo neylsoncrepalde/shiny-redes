@@ -1,1 +1,1 @@
-Imagens da aplicação.
+Imagens e CSS.

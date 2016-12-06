@@ -41,6 +41,7 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.c
                           # Sidebar with a slider input for number of bins 
                           sidebarLayout(
                             sidebarPanel(style = "background-color: #BA1723;",
+                                         tags$head(tags$style("#net{height:80vh !important;}")),
                                          
                               img(src="http://www.giars.ufmg.br/images/logo.png", height=107, width=225),
                               helpText("Trabalhando com a rede de advogados de E. Lazega."),
@@ -71,6 +72,7 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.c
                           # Sidebar with a slider input for number of bins 
                           sidebarLayout(
                             sidebarPanel(style = "background-color: #BA1723;",
+                                         tags$head(tags$style("#net2{height:80vh !important;}")),
                                          
                                          img(src="http://www.giars.ufmg.br/images/logo.png", height=107, width=225),
                                          helpText("Trabalhando com a subrede de blogs de política Franceses"),
@@ -125,7 +127,7 @@ server <- function(input, output) {
     )
     
     
-    plot.igraph(dataInput(), layout=algo, vertex.size=escore, vertex.label.cex=.8,
+    plot.igraph(dataInput(), layout=algo, vertex.size=escore, vertex.label.cex=1,
                 #vertex.color='SkyBlue2',
                 main = input$text)
   })

@@ -69,6 +69,7 @@ server <- function(input, output) {
    
   dataInput = reactive({
     lazega = upgrade_graph(lazega)
+    lazega = delete_vertices(lazega, c("V23","V8"))
   })
   
   output$net <- renderPlot({
@@ -83,8 +84,8 @@ server <- function(input, output) {
                     "Nenhum" = 15,
                     "Centralidade de Grau" = degree(dataInput()),
                     "Centralidade de Intermediação" = ( betweenness(dataInput())/2 ),
-                    "Centralidade de Proximidade" = (closeness(dataInput())*10 ),
-                    "Constraint" = constraint( delete_vertices(dataInput(), c("V23","V8") ))
+                    "Centralidade de Proximidade" = (closeness(dataInput())*100 ),
+                    "Constraint" = constraint(dataInput())
                     )
     
     

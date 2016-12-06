@@ -10,6 +10,7 @@
 library(shiny)
 library(igraph)
 library(sand)
+library(ggplot2)
 
 
 # Define UI for application that draws a histogram
@@ -19,7 +20,7 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.c
                           sidebarLayout(
                             sidebarPanel(style = "background-color: #BA1723;",
                                          
-                              img(src="http://www.giars.ufmg.br/images/logo.png", height=107, width=225)
+                                         img(src="http://www.giars.ufmg.br/images/logo.png", height=107, width=225)
                             ),
                             mainPanel(
                               h1("Aplicação de Análise de Redes Sociais - GIARS"),
@@ -36,70 +37,73 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.c
                  # Application title
                  #titlePanel("Análise de Redes Sociais"),
                  navbarMenu("Redes - Exemplos",
-                   
-                 tabPanel("Rede de Advogados", 
-                          # Sidebar with a slider input for number of bins 
-                          sidebarLayout(
-                            sidebarPanel(style = "background-color: #BA1723;",
-                                         tags$head(tags$style("#net{height:80vh !important;}")),
-                                         
-                              img(src="http://www.giars.ufmg.br/images/logo.png", height=107, width=225),
-                              helpText("Trabalhando com a rede de advogados de E. Lazega."),
-                              textInput("text", label = "Defina o título da rede", value = "Advogados - Componente Principal"),
-                              selectInput("algoritmo", label = "Defina o algoritmo de visualização",
-                                          choices = c("Fruchterman-Reingold","Kamada-Kawai",
-                                                      "Escalonamento Multidimensional","Circular"),
-                                          selected = "Fruchterman-Reingold"),
-                              
-                              selectInput("metrica", label = "Métrica de Rede",
-                                          choices = c("Nenhum","Centralidade de Grau",
-                                                      "Centralidade de Intermediação",
-                                                      "Centralidade de Proximidade","Constraint"),
-                                          selected = "Nenhum"),
-                              
-                              
-                              submitButton(text = "Atualizar")
+                            
+                            tabPanel("Rede de Advogados", 
+                                     # Sidebar with a slider input for number of bins 
+                                     sidebarLayout(
+                                       sidebarPanel(style = "background-color: #BA1723;",
+                                                    tags$head(tags$style("#net{height:80vh !important;}")),
+                                                    
+                                                    img(src="http://www.giars.ufmg.br/images/logo.png", height=107, width=225),
+                                                    helpText("Trabalhando com a rede de advogados de E. Lazega."),
+                                                    textInput("text", label = "Defina o título da rede", value = "Advogados - Componente Principal"),
+                                                    selectInput("algoritmo", label = "Defina o algoritmo de visualização",
+                                                                choices = c("Fruchterman-Reingold","Kamada-Kawai",
+                                                                            "Escalonamento Multidimensional","Circular"),
+                                                                selected = "Fruchterman-Reingold"),
+                                                    
+                                                    selectInput("metrica", label = "Métrica de Rede",
+                                                                choices = c("Nenhum","Centralidade de Grau",
+                                                                            "Centralidade de Intermediação",
+                                                                            "Centralidade de Proximidade","Constraint"),
+                                                                selected = "Nenhum"),
+                                                    
+                                                    selectInput("atributos", label = "Atributos qualitativos",
+                                                                choices = c("Nenhum","Gênero","Escritório")),
+                                                    
+                                                    submitButton(text = "Atualizar")
+                                       ),
+                                       
+                                       # Show a plot of the generated distribution
+                                       mainPanel(
+                                         plotOutput("net"),
+                                         plotOutput("met-plot")
+                                       )
+                                     )
                             ),
                             
-                            # Show a plot of the generated distribution
-                            mainPanel(
-                              plotOutput("net")
+                            tabPanel("Rede de Blogs", 
+                                     # Sidebar with a slider input for number of bins 
+                                     sidebarLayout(
+                                       sidebarPanel(style = "background-color: #BA1723;",
+                                                    tags$head(tags$style("#net2{height:80vh !important;}")),
+                                                    
+                                                    img(src="http://www.giars.ufmg.br/images/logo.png", height=107, width=225),
+                                                    helpText("Trabalhando com a subrede de blogs de política Franceses"),
+                                                    textInput("text2", label = "Defina o título da rede", value = "Blogs de Política Franceses"),
+                                                    selectInput("algoritmo2", label = "Defina o algoritmo de visualização",
+                                                                choices = c("Fruchterman-Reingold","Kamada-Kawai",
+                                                                            "Escalonamento Multidimensional","Circular"),
+                                                                selected = "Fruchterman-Reingold"),
+                                                    
+                                                    selectInput("metrica2", label = "Métrica de Rede",
+                                                                choices = c("Nenhum","Centralidade de Grau",
+                                                                            "Centralidade de Intermediação",
+                                                                            "Centralidade de Proximidade","Constraint"),
+                                                                selected = "Nenhum"),
+                                                    
+                                                    
+                                                    submitButton(text = "Atualizar")
+                                       ),
+                                       
+                                       # Show a plot of the generated distribution
+                                       mainPanel(
+                                         plotOutput("net2")
+                                       )
+                                     )
                             )
-                          )
-                 ),
-                 
-                 tabPanel("Rede de Blogs", 
-                          # Sidebar with a slider input for number of bins 
-                          sidebarLayout(
-                            sidebarPanel(style = "background-color: #BA1723;",
-                                         tags$head(tags$style("#net2{height:80vh !important;}")),
-                                         
-                                         img(src="http://www.giars.ufmg.br/images/logo.png", height=107, width=225),
-                                         helpText("Trabalhando com a subrede de blogs de política Franceses"),
-                                         textInput("text2", label = "Defina o título da rede", value = "Blogs de Política Franceses"),
-                                         selectInput("algoritmo2", label = "Defina o algoritmo de visualização",
-                                                     choices = c("Fruchterman-Reingold","Kamada-Kawai",
-                                                                 "Escalonamento Multidimensional","Circular"),
-                                                     selected = "Fruchterman-Reingold"),
-                                         
-                                         selectInput("metrica2", label = "Métrica de Rede",
-                                                     choices = c("Nenhum","Centralidade de Grau",
-                                                                 "Centralidade de Intermediação",
-                                                                 "Centralidade de Proximidade","Constraint"),
-                                                     selected = "Nenhum"),
-                                         
-                                         
-                                         submitButton(text = "Atualizar")
-                            ),
-                            
-                            # Show a plot of the generated distribution
-                            mainPanel(
-                              plotOutput("net2")
-                            )
-                          )
                  )
-          )
-)
+                 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
@@ -126,11 +130,20 @@ server <- function(input, output) {
                     "Constraint" = constraint(dataInput())*20
     )
     
+    atrib = switch(input$atributos,
+                   "Nenhum" = as.factor(1),
+                   "Gênero" = as.factor(V(dataInput())$Gender),
+                   "Escritório" = as.factor(V(dataInput())$Office)
+                   )
     
     plot.igraph(dataInput(), layout=algo, vertex.size=escore, vertex.label.cex=1,
-                #vertex.color='SkyBlue2',
-                main = input$text)
+                vertex.color=atrib, main = input$text)
   })
+  
+  # Programar o plot das métricas
+  #output$met-plot = renderPlot({
+    #Colocar o escore como reactive. Talvez funcione
+  #})
   
   # Rede de blogs
   dataInput2 = reactive({
@@ -140,17 +153,17 @@ server <- function(input, output) {
   output$net2 <- renderPlot({
     
     algo2 = switch(input$algoritmo2,
-                  "Fruchterman-Reingold" = layout_with_fr,
-                  "Kamada-Kawai" = layout_with_kk,
-                  "Escalonamento Multidimensional" = layout_with_mds,
-                  "Circular" = layout_in_circle)
+                   "Fruchterman-Reingold" = layout_with_fr,
+                   "Kamada-Kawai" = layout_with_kk,
+                   "Escalonamento Multidimensional" = layout_with_mds,
+                   "Circular" = layout_in_circle)
     
     escore2 = switch(input$metrica2,
-                    "Nenhum" = 5,
-                    "Centralidade de Grau" = degree(dataInput2())/2,
-                    "Centralidade de Intermediação" = betweenness(dataInput2())/100,
-                    "Centralidade de Proximidade" = closeness(dataInput2())*2000,
-                    "Constraint" = constraint(dataInput2())*40
+                     "Nenhum" = 5,
+                     "Centralidade de Grau" = degree(dataInput2())/2,
+                     "Centralidade de Intermediação" = betweenness(dataInput2())/100,
+                     "Centralidade de Proximidade" = closeness(dataInput2())*2000,
+                     "Constraint" = constraint(dataInput2())*40
     )
     
     plot.igraph(dataInput2(), layout=algo2, vertex.size=escore2, vertex.label=NA,

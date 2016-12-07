@@ -11,6 +11,7 @@ library(shiny)
 library(igraph)
 library(sand)
 library(ggplot2)
+library(descr)
 
 
 # Define UI for application that draws a histogram
@@ -72,7 +73,10 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.c
                                             ),
                                            tabPanel("Distribuição da métrica",
                                              plotOutput("met_plot")
-                                           )
+                                           ),
+                                           tabPanel("Análise dos atributos",
+                                                    verbatimTextOutput("freq1")
+                                                    )
                                          )
                                          )
                                      )
@@ -114,6 +118,9 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.c
                                            ),
                                            tabPanel("Distribuição da métrica",
                                                     plotOutput("met_plot2")
+                                           ),
+                                           tabPanel("Análise dos atributos",
+                                                    verbatimTextOutput("freq2")
                                            )
                                          )
                                        )
@@ -173,6 +180,17 @@ server <- function(input, output) {
     
   })
   
+  output$freq1 = renderPrint({
+    atrib.tab = switch(input$atributos,
+                   "Nenhum" = NULL,
+                   "Gênero" = V(dataInput())$Gender,
+                   "Escritório" = V(dataInput())$Office
+    )
+    
+    if (is.null(atrib.tab)){print("Nenhum atributo selecionado.")}
+    else{freq(atrib.tab, plot=F)}
+    
+  })
   # Rede de blogs
   dataInput2 = reactive({
     blogs = upgrade_graph(fblog)
@@ -220,6 +238,11 @@ server <- function(input, output) {
       labs(x="",y="",title="Distribuição da métrica selecionada")+
       theme_gray(base_size = 12)
     
+  })
+  
+  output$freq2 = renderPrint({
+    if(input$atributos2 == FALSE){print("Nenhum atributo selecionado.")}
+    else{freq(V(dataInput2())$PolParty)}
   })
   
 }

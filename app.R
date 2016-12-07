@@ -242,7 +242,7 @@ server <- function(input, output) {
   
   output$freq2 = renderPrint({
     if(input$atributos2 == FALSE){print("Nenhum atributo selecionado.")}
-    else{freq(V(dataInput2())$PolParty)}
+    else{freq(V(dataInput2())$PolParty, plot=F)}
   })
   
 }

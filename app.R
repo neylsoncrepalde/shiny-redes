@@ -52,7 +52,7 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.c
                                                                             "Escalonamento Multidimensional","Circular"),
                                                                 selected = "Fruchterman-Reingold"),
                                                     
-                                                    selectInput("metrica", label = "Métrica de Rede",
+                                                    selectInput("metrica", label = "Métricas de redes",
                                                                 choices = c("Nenhum","Centralidade de Grau",
                                                                             "Centralidade de Intermediação",
                                                                             "Centralidade de Proximidade","Constraint"),
@@ -66,9 +66,15 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.c
                                        
                                        # Show a plot of the generated distribution
                                        mainPanel(
-                                         plotOutput("net"),
-                                         plotOutput("met-plot")
-                                       )
+                                         tabsetPanel(
+                                           tabPanel("Grafo",
+                                             plotOutput("net")
+                                            ),
+                                           tabPanel("Distribuição da métrica",
+                                             plotOutput("met_plot")
+                                           )
+                                         )
+                                         )
                                      )
                             ),
                             
@@ -92,13 +98,24 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.c
                                                                             "Centralidade de Proximidade","Constraint"),
                                                                 selected = "Nenhum"),
                                                     
+                                                    checkboxInput("atributos2",
+                                                                  label="Atributo qualitativo - Partido Político",
+                                                                  value = FALSE
+                                                                  ),
                                                     
                                                     submitButton(text = "Atualizar")
                                        ),
                                        
                                        # Show a plot of the generated distribution
                                        mainPanel(
-                                         plotOutput("net2")
+                                         tabsetPanel(
+                                           tabPanel("Grafo",
+                                                    plotOutput("net2")
+                                           ),
+                                           tabPanel("Distribuição da métrica",
+                                                    plotOutput("met_plot2")
+                                           )
+                                         )
                                        )
                                      )
                             )
@@ -141,9 +158,20 @@ server <- function(input, output) {
   })
   
   # Programar o plot das métricas
-  #output$met-plot = renderPlot({
-    #Colocar o escore como reactive. Talvez funcione
-  #})
+  output$met_plot = renderPlot({
+    escore_met = switch(input$metrica,
+                    "Nenhum" = NULL,
+                    "Centralidade de Grau" = degree(dataInput()),
+                    "Centralidade de Intermediação" = betweenness(dataInput()),
+                    "Centralidade de Proximidade" = closeness(dataInput()),
+                    "Constraint" = constraint(dataInput())
+    )
+    
+    ggplot(NULL, aes(escore_met))+geom_histogram(col="white", bins=10)+
+      labs(x="",y="",title="Distribuição da métrica selecionada")+
+      theme_gray(base_size = 12)
+    
+  })
   
   # Rede de blogs
   dataInput2 = reactive({
@@ -166,9 +194,32 @@ server <- function(input, output) {
                      "Constraint" = constraint(dataInput2())*40
     )
     
-    plot.igraph(dataInput2(), layout=algo2, vertex.size=escore2, vertex.label=NA,
+    if(input$atributos2 == FALSE){
+        plot.igraph(dataInput2(), layout=algo2, vertex.size=escore2, vertex.label=NA,
                 #vertex.color='SkyBlue2',
                 main = input$text2)
+    }
+    else{
+      plot.igraph(dataInput2(), layout=algo2, vertex.size=escore2, vertex.label=NA,
+                  vertex.color=as.factor(V(dataInput2())$PolParty),
+                  main = input$text2)
+    }
+    
+  })
+  
+  output$met_plot2 = renderPlot({
+    escore_met2 = switch(input$metrica2,
+                        "Nenhum" = NULL,
+                        "Centralidade de Grau" = degree(dataInput2()),
+                        "Centralidade de Intermediação" = betweenness(dataInput2()),
+                        "Centralidade de Proximidade" = closeness(dataInput2()),
+                        "Constraint" = constraint(dataInput2())
+    )
+    
+    ggplot(NULL, aes(escore_met2))+geom_histogram(col="white", bins=20)+
+      labs(x="",y="",title="Distribuição da métrica selecionada")+
+      theme_gray(base_size = 12)
+    
   })
   
 }

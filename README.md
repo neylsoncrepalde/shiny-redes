@@ -4,7 +4,9 @@ Para instalar o shiny use `install.packages("shiny", dependencies = T)`.
 
 Para rodar a aplicação, é necessário também instalar 4 outros pacotes, *igraph*, *sand*, *descr* e *ggplot2*. Se não tiver os pacotes instalados use: `install.packages(c("igraph","sand","descr","ggplot2"), dependencies = T)`.
 
-Para iniciar a aplicação, use `runGitHub("shiny-redes","neylsoncrepalde")`. Dúvidas, sugestões, mande um e-mail para neylsoncrepalde@gmail.com.
+Para iniciar a aplicação, use `runGitHub("shiny-redes","neylsoncrepalde")`. Divirta-se!!!
+
+Dúvidas, sugestões, mande um e-mail para neylsoncrepalde@gmail.com.
 
 Elaboração: [Neylson Crepalde](https://www.facebook.com/neylson.crepalde).
 

@@ -8,6 +8,6 @@ Para iniciar a aplicação, use `shiny::runGitHub("shiny-redes","neylsoncrepalde
 
 Dúvidas, sugestões, mande um e-mail para neylsoncrepalde@gmail.com.
 
-Elaboração: [Neylson Crepalde](https://www.facebook.com/neylson.crepalde).
+Desenvolvimento: [Neylson Crepalde](https://www.facebook.com/neylson.crepalde).
 
 **[GIARS](http://www.giars.ufmg.br) (Grupo Interdisciplinar de Pesquisa em Análise de Redes Sociais) - UFMG**

@@ -12,7 +12,7 @@ library(igraph)
 library(sand)
 library(ggplot2)
 library(descr)
-
+library(magrittr)
 
 # Define UI for application that draws a histogram
 ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.css",
@@ -21,17 +21,51 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.c
                           sidebarLayout(
                             sidebarPanel(style = "background-color: #BA1723;",
                                          
-                                         img(src="http://www.giars.ufmg.br/images/logo.png", height=107, width=225)
+                                         img(src="http://www.giars.ufmg.br/images/logo.png", height=107, width=225),
+                                         
+                                         p("Esta é uma aplicação de testes de Análise de Redes Sociais desenvolvido 
+                                         por", tags$b(a("Neylson Crepalde", href="https://www.facebook.com/neylson.crepalde")), 
+                                          "e pelo", tags$b("GIARS"), "(Grupo Interdisciplinar de Pesquisa em Análise
+                                         de Redes Sociais). Ela foi desenvolvida com", a("Shiny", href="https://shiny.rstudio.com/"),
+                                         "e seu objetivo é facilitar o aprendizado e fomentar o uso de ferramentas de ARS no Brasil."),
+                                         br(),
+                                         p("Esta aplicação está em desenvolvimento! Visite o site do GIARS!"),
+                                         tags$b(a("www.giars.ufmg.br", href="http://www.giars.ufmg.br")),
+                                         
+                                         br(),
+                                         br(),
+                                         p("Dúvidas? Entre em contato conosco pelo nosso e-mail ou página do Facebook!"),
+                                         a(href="mailto:giarsufmg@gmail.com", img(src="mail-6-64x64.png", width=35, height=35)),
+                                         a(href="https://www.facebook.com/giarsufmg", img(src="facebook-3-64x64.png", width=35, height=35))
                             ),
                             mainPanel(
                               h1("Aplicação de Análise de Redes Sociais - GIARS"),
-                              
-                              p("Esta é uma aplicação de testes de Análise de Redes Sociais desenvolvido 
-                                por Neylson Crepalde e pelo GIARS (Grupo Interdisciplinar de Pesquisa em Análise
-                                de Redes Sociais). Seu objetivo é facilitar o aprendizado e fomentar o uso 
-                                de ferramentas de ARS no Brasil."),
+                              p("Esta aplicação possui dois bancos de dados relacionais (duas redes) embutidos no pacote", 
+                                tags$b("sand"),"do", tags$b("R.")),
                               br(),
-                              p("Esta aplicação está em desenvolvimento!")
+                              
+                              h2("Rede de advogados de Lazega"),
+                              p("A rede de advogados foi extraída de um estudo sobre redes de parcerias corporativas entre advogados.
+                                Esse estudo aconteceu numa firma de advocacia em New England, EUA e foi conduzido pelo sociólogo
+                                francês", a("Emmanuel Lazega", href="http://elazega.fr/"), ". Ela inclui medidas de 71 advogados 
+                                dessa firma, sua rede de laços fortes com colegas de trabalho, redes de aconselhamento, de amizade
+                                e redes de controle indireto. Aqui temos acesso apenas a um", tags$em("subset"), "de 34 parceiros dessa firma."),
+                              p("Os", tags$b("atributos"),"da rede disponíveis aqui são", tags$b("gênero"), "codificado como 
+                                1=HOMEM e 2=MULHER e", tags$b("escritório"),"codificado como 1=BOSTON, 2=HARTFORD e 3=PROVIDENCE (Fonte:
+                                documentação do pacote sand)."),
+                              h4("Referência:"),
+                              p("E. Lazega, The Collegial Phenomenon: The Social Mechanisms of Cooperation Among Peers in a 
+                                Corporate Law Partnership. Oxford University Press, Oxford (2001)."),
+                              
+                              br(),
+                              h2("Rede de blogs de política franceses"),
+                              p("Este banco de dados consiste de uma subrede de blogs de política franceses extraídos de uma coleta",
+                                em("cross-section"),"de mais de 1100 desses blogs em um dia de outubro de 2006 e classificados pelo 
+                                projeto Observatório Presidencial quanto à afiliação política. Aqui, temos uma amostra de 192 vértices
+                                e 1431 laços. O laço é não-direcionado e consiste da existência de um link para outro blog. Para mais
+                                informações, consulte", a("http://observatoire-presidentielle.fr/", href="http://observatoire-presidentielle.fr/"),
+                                "(Fonte: documentação do pacote sand).")
+                              
                               )
                           )),             
                  
@@ -69,16 +103,16 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.c
                                        mainPanel(
                                          tabsetPanel(
                                            tabPanel("Grafo",
-                                             plotOutput("net")
-                                            ),
+                                                    plotOutput("net")
+                                           ),
                                            tabPanel("Distribuição da métrica",
-                                             plotOutput("met_plot")
+                                                    plotOutput("met_plot")
                                            ),
                                            tabPanel("Análise dos atributos",
                                                     verbatimTextOutput("freq1")
-                                                    )
+                                           )
                                          )
-                                         )
+                                       )
                                      )
                             ),
                             
@@ -105,7 +139,7 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.c
                                                     checkboxInput("atributos2",
                                                                   label="Atributo qualitativo - Partido Político",
                                                                   value = FALSE
-                                                                  ),
+                                                    ),
                                                     
                                                     submitButton(text = "Atualizar")
                                        ),
@@ -158,7 +192,7 @@ server <- function(input, output) {
                    "Nenhum" = as.factor(1),
                    "Gênero" = as.factor(V(dataInput())$Gender),
                    "Escritório" = as.factor(V(dataInput())$Office)
-                   )
+    )
     
     plot.igraph(dataInput(), layout=algo, vertex.size=escore, vertex.label.cex=1,
                 vertex.color=atrib, main = input$text)
@@ -167,11 +201,11 @@ server <- function(input, output) {
   # Programar o plot das métricas
   output$met_plot = renderPlot({
     escore_met = switch(input$metrica,
-                    "Nenhum" = NULL,
-                    "Centralidade de Grau" = degree(dataInput()),
-                    "Centralidade de Intermediação" = betweenness(dataInput()),
-                    "Centralidade de Proximidade" = closeness(dataInput()),
-                    "Constraint" = constraint(dataInput())
+                        "Nenhum" = NULL,
+                        "Centralidade de Grau" = degree(dataInput()),
+                        "Centralidade de Intermediação" = betweenness(dataInput()),
+                        "Centralidade de Proximidade" = closeness(dataInput()),
+                        "Constraint" = constraint(dataInput())
     )
     
     ggplot(NULL, aes(escore_met))+geom_histogram(col="white", bins=10)+
@@ -182,12 +216,12 @@ server <- function(input, output) {
   
   output$freq1 = renderPrint({
     atrib.tab = switch(input$atributos,
-                   "Nenhum" = NULL,
-                   "Gênero" = V(dataInput())$Gender,
-                   "Escritório" = V(dataInput())$Office
+                       "Nenhum" = NULL,
+                       "Gênero" = V(dataInput())$Gender,
+                       "Escritório" = V(dataInput())$Office
     )
     
-    if (is.null(atrib.tab)){print("Nenhum atributo selecionado.")}
+    if (is.null(atrib.tab)){cat("Nenhum atributo selecionado.")}
     else{freq(atrib.tab, plot=F)}
     
   })
@@ -213,9 +247,9 @@ server <- function(input, output) {
     )
     
     if(input$atributos2 == FALSE){
-        plot.igraph(dataInput2(), layout=algo2, vertex.size=escore2, vertex.label=NA,
-                #vertex.color='SkyBlue2',
-                main = input$text2)
+      plot.igraph(dataInput2(), layout=algo2, vertex.size=escore2, vertex.label=NA,
+                  #vertex.color='SkyBlue2',
+                  main = input$text2)
     }
     else{
       plot.igraph(dataInput2(), layout=algo2, vertex.size=escore2, vertex.label=NA,
@@ -227,11 +261,11 @@ server <- function(input, output) {
   
   output$met_plot2 = renderPlot({
     escore_met2 = switch(input$metrica2,
-                        "Nenhum" = NULL,
-                        "Centralidade de Grau" = degree(dataInput2()),
-                        "Centralidade de Intermediação" = betweenness(dataInput2()),
-                        "Centralidade de Proximidade" = closeness(dataInput2()),
-                        "Constraint" = constraint(dataInput2())
+                         "Nenhum" = NULL,
+                         "Centralidade de Grau" = degree(dataInput2()),
+                         "Centralidade de Intermediação" = betweenness(dataInput2()),
+                         "Centralidade de Proximidade" = closeness(dataInput2()),
+                         "Constraint" = constraint(dataInput2())
     )
     
     ggplot(NULL, aes(escore_met2))+geom_histogram(col="white", bins=20)+
@@ -241,7 +275,7 @@ server <- function(input, output) {
   })
   
   output$freq2 = renderPrint({
-    if(input$atributos2 == FALSE){print("Nenhum atributo selecionado.")}
+    if(input$atributos2 == FALSE){cat("Nenhum atributo selecionado.")}
     else{freq(V(dataInput2())$PolParty, plot=F)}
   })
   

@@ -12,7 +12,6 @@ library(igraph)
 library(sand)
 library(ggplot2)
 library(descr)
-library(magrittr)
 
 # Define UI for application that draws a histogram
 ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.css",

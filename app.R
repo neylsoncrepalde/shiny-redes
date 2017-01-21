@@ -66,7 +66,10 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.c
                                 informações, consulte", a("http://observatoire-presidentielle.fr/", href="http://observatoire-presidentielle.fr/"),
                                 "(Fonte: documentação do pacote sand).")
                               
+                              
                               )
+                            
+                            
                           )),             
                  
                  # Application title
@@ -160,7 +163,28 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.c
                                        )
                                      )
                             )
-                 )
+                 ),
+                 
+                 navbarMenu('Analise a sua rede',
+                            tabPanel('Instruções',
+                                     sidebarLayout(
+                                       sidebarPanel(
+                                         style = "background-color: #BA1723;",
+                                         tags$head(tags$style("#net2{height:80vh !important;}")),
+                                         
+                                         img(src="http://www.giars.ufmg.br/images/logo.png", height=107, width=225),
+                                         h1('Instruções')
+                                         ),
+                                       mainPanel(
+                                         h2('Analise a sua própria rede no shiny app do GIARS:'),
+                                         br(),
+                                         
+                                         p('Passo 1 - ')
+                                       )
+                                     )
+                                     )
+                            
+                            )
                  )
 
 # Define server logic required to draw a histogram

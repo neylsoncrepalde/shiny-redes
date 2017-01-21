@@ -12,6 +12,7 @@ library(igraph)
 library(sand)
 library(ggplot2)
 library(descr)
+library(magrittr)
 
 # Define UI for application that draws a histogram
 ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.css",
@@ -22,13 +23,13 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.c
                                          
                                          img(src="http://www.giars.ufmg.br/images/logo.png", height=107, width=225),
                                          
-                                         p("Esta é uma aplicação de testes de Análise de Redes Sociais desenvolvido 
+                                         p("Esta é uma aplicação de testes de Análise de Redes Sociais desenvolvida 
                                          por", tags$b(a("Neylson Crepalde", href="https://www.facebook.com/neylson.crepalde")), 
                                           "e pelo", tags$b("GIARS"), "(Grupo Interdisciplinar de Pesquisa em Análise
                                          de Redes Sociais). Ela foi desenvolvida com", a("Shiny", href="https://shiny.rstudio.com/"),
                                          "e seu objetivo é facilitar o aprendizado e fomentar o uso de ferramentas de ARS no Brasil."),
                                          br(),
-                                         p("Esta aplicação está em desenvolvimento! Visite o site do GIARS!"),
+                                         p("Visite o site do GIARS!"),
                                          tags$b(a("www.giars.ufmg.br", href="http://www.giars.ufmg.br")),
                                          
                                          br(),

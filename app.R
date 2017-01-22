@@ -13,6 +13,7 @@ library(sand)
 library(ggplot2)
 library(descr)
 library(magrittr)
+library(readr)
 
 # Define UI for application that draws a histogram
 ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.css",
@@ -111,6 +112,9 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.c
                                            tabPanel("Distribuição da métrica",
                                                     plotOutput("met_plot")
                                            ),
+                                           tabPanel("Medidas da redes",
+                                                    tableOutput('desc1')       
+                                           ),
                                            tabPanel("Análise dos atributos",
                                                     verbatimTextOutput("freq1")
                                            )
@@ -156,6 +160,9 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.c
                                            tabPanel("Distribuição da métrica",
                                                     plotOutput("met_plot2")
                                            ),
+                                           tabPanel("Medidas da redes",
+                                                    tableOutput('desc2')       
+                                           ),
                                            tabPanel("Análise dos atributos",
                                                     verbatimTextOutput("freq2")
                                            )
@@ -180,6 +187,54 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.c
                                          br(),
                                          
                                          p('Passo 1 - ')
+                                       )
+                                     )
+                                     ),
+                            
+                            tabPanel('Análises',
+                                     sidebarLayout(
+                                       sidebarPanel(
+                                         style = "background-color: #BA1723;",
+                                         tags$head(tags$style("#net2{height:80vh !important;}")),
+                                         
+                                         img(src="http://www.giars.ufmg.br/images/logo.png", height=107, width=225),
+                                         helpText('Lembre-se de que seu banco de dados deve ser um arquivo .csv em 2 ou 3 colunas (edgelist).'),
+                                         fileInput('file', label = 'Insira aqui o banco de dados .csv de sua rede',
+                                                   accept = c(
+                                                     "text/csv",
+                                                     "text/comma-separated-values,text/plain",
+                                                     ".csv")),
+                                         textInput("text3", label = "Defina o título da rede"),
+                                         selectInput("algoritmo3", label = "Defina o algoritmo de visualização",
+                                                     choices = c("Fruchterman-Reingold","Kamada-Kawai",
+                                                                 "Escalonamento Multidimensional","Circular"),
+                                                     selected = "Fruchterman-Reingold"),
+                                         
+                                         selectInput('color3', label = 'Defina a cor dos nós da rede',
+                                                     choices = c('Vermelho','Azul','Amarelo','Verde','Laranja',
+                                                                 'Azul Claro'),
+                                                     selected = 'Vermelho'),
+                                         
+                                         selectInput("metrica3", label = "Métricas de redes",
+                                                     choices = c("Nenhum","Centralidade de Grau",
+                                                                 "Centralidade de Intermediação",
+                                                                 "Centralidade de Proximidade","Constraint"),
+                                                     selected = "Nenhum"),
+                                         submitButton(text = "Atualizar")
+                                       ),
+                                       
+                                       mainPanel(
+                                         tabsetPanel(
+                                           tabPanel("Grafo",
+                                                    plotOutput("net3")
+                                           ),
+                                           tabPanel("Distribuição da métrica",
+                                                    plotOutput("met_plot3")
+                                           ),
+                                           tabPanel("Medidas da redes",
+                                                    tableOutput('desc3')       
+                                           )
+                                         )
                                        )
                                      )
                                      )
@@ -236,6 +291,19 @@ server <- function(input, output) {
       labs(x="",y="",title="Distribuição da métrica selecionada")+
       theme_gray(base_size = 12)
     
+  })
+  
+  # Programando as medidas descritivas da rede
+  output$desc1 = renderTable({
+    densidade1 = graph.density(dataInput())
+    diametro1 = diameter(dataInput(), directed = F, unconnected = F)
+    transitividade1 = transitivity(dataInput())
+    names1 = c("Densidade","Diâmetro","Transitividade")
+    
+    df1 = data.frame(data = cbind(names1, rbind(densidade1,diametro1,transitividade1))
+                     )
+    names(df1) = c("Medidas Descritivas","Valores")
+    df1
   })
   
   output$freq1 = renderPrint({
@@ -298,11 +366,110 @@ server <- function(input, output) {
     
   })
   
+  #Tabela de medidas de rede 2
+  # Programando as medidas descritivas da rede
+  output$desc2 = renderTable({
+    densidade2 = graph.density(dataInput2())
+    diametro2 = diameter(dataInput2(), directed = F, unconnected = F)
+    transitividade2 = transitivity(dataInput2())
+    names2 = c("Densidade","Diâmetro","Transitividade")
+    
+    df2 = data.frame(data = cbind(names2, rbind(densidade2,diametro2,transitividade2))
+    )
+    names(df2) = c("Medidas Descritivas","Valores")
+    df2
+  })
+  
+  
   output$freq2 = renderPrint({
     if(input$atributos2 == FALSE){cat("Nenhum atributo selecionado.")}
     else{freq(V(dataInput2())$PolParty, plot=F)}
   })
   
+  #=========================================
+  # Rede do usuário
+  dataInput3 = reactive({
+    
+    inFile = input$file
+    
+    rede_usuario = read_csv(inFile$datapath, col_names = F) %>% as.matrix
+    if(ncol(rede_usuario) == 2){
+      g.usuario = graph_from_edgelist(rede_usuario)
+      E(g.usuario)$weight = 1
+    }
+    if(ncol(rede_usuario) == 3){
+      g.usuario = graph_from_edgelist(rede_usuario[,c(1,2)])
+      E(g.usuario)$weight = rede_usuario[,3]
+    }
+    
+    g.usuario
+  })
+  
+  output$net3 <- renderPlot({
+    algo3 = switch(input$algoritmo3,
+                   "Fruchterman-Reingold" = layout_with_fr,
+                   "Kamada-Kawai" = layout_with_kk,
+                   "Escalonamento Multidimensional" = layout_with_mds,
+                   "Circular" = layout_in_circle)
+    
+    escore3 = switch(input$metrica3,
+                     "Nenhum" = 5,
+                     "Centralidade de Grau" = degree(dataInput3()),
+                     "Centralidade de Intermediação" = betweenness(dataInput3()),
+                     "Centralidade de Proximidade" = closeness(dataInput3())*200,
+                     "Constraint" = constraint(dataInput3())*30)
+    
+    cor3 = switch(input$color3,
+                  'Vermelho' = 'red',
+                  'Azul'= 'blue',
+                  'Amarelo' = 'yellow',
+                  'Verde' = 'green',
+                  'Laranja' = 'orange',
+                  'Azul Claro' = 'lightblue')
+    
+    plot.igraph(dataInput3(), layout=algo3, vertex.size=escore3, 
+                vertex.label=V(dataInput3())$name, vertex.label.cex = 1,
+                vertex.label.color = adjustcolor('blue',.8),
+                  vertex.color=cor3, edge.width = E(dataInput3())$weight,
+                  edge.color = adjustcolor('grey',.6),
+                  main = input$text3)
+    
+  })
+  
+  output$met_plot3 = renderPlot({
+    escore_met3 = switch(input$metrica3,
+                         "Nenhum" = NULL,
+                         "Centralidade de Grau" = degree(dataInput3()),
+                         "Centralidade de Intermediação" = betweenness(dataInput3()),
+                         "Centralidade de Proximidade" = closeness(dataInput3()),
+                         "Constraint" = constraint(dataInput3())
+    )
+    
+    ggplot(NULL, aes(escore_met3))+geom_histogram(col="white", bins=20)+
+      labs(x="",y="",title="Distribuição da métrica selecionada")+
+      theme_gray(base_size = 12)
+    
+  })
+  
+  #Tabela de medidas de rede do usuário
+  # Programando as medidas descritivas da rede
+  output$desc3 = renderTable({
+    
+    densidade3 = graph.density(dataInput3())
+    if(is.connected(dataInput3()) == T){
+      diametro3 = diameter(dataInput3(), directed = F, unconnected = F)
+    } else{
+      diametro3 = diameter(dataInput3(), directed = F, unconnected = T)
+    }
+    
+    transitividade3 = transitivity(dataInput3())
+    names3 = c("Densidade","Diâmetro","Transitividade")
+    
+    df3 = data.frame(data = cbind(names3, rbind(densidade3,diametro3,transitividade3))
+    )
+    names(df3) = c("Medidas Descritivas","Valores")
+    df3
+  })
 }
 
 # Run the application 

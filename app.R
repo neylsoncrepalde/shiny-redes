@@ -180,13 +180,25 @@ ui <- navbarPage("Análise de Redes Sociais - GIARS", theme = "slate_bootstrap.c
                                          tags$head(tags$style("#net2{height:80vh !important;}")),
                                          
                                          img(src="http://www.giars.ufmg.br/images/logo.png", height=107, width=225),
-                                         h1('Instruções')
+                                         h2('Instruções')
                                          ),
                                        mainPanel(
                                          h2('Analise a sua própria rede no shiny app do GIARS:'),
                                          br(),
                                          
-                                         p('Passo 1 - ')
+                                         p('Para analisar a sua própria rede, você deve carregar na aba "Análises" um arquivo .csv de
+                                           duas ou três colunas. O arquivo deve ser organizado da seguinte forma:'),
+                                         br(),
+                                         p('A primeira coluna deve conter o ', tags$em('sender'),', ou seja, o nó que envia o laço. A 
+                                           segunda coluna deve conter o ', tags$em('receiver'),', ou seja, o nó que recebe o laço. Caso 
+                                           haja uma terceira coluna (opcional), esta deve conter um valor numérico da força do laço. Este é um 
+                                           formato bastante comum de dados em rede o qual chamamos de ', tags$em('edgelist.')),
+                                         p(tags$b('Não coloque cabeçalho (header) ou nome de variável. '), 'Segue um exemplo de arquivo ideal 
+                                           para análises neste ', tags$em('app.')),
+                                         br(),
+                                         tableOutput('exemplo'),
+                                         br(),
+                                         p('Qualquer dúvida, entre em contato conosco. Boas análises. Divirta-se!')
                                        )
                                      )
                                      ),
@@ -469,6 +481,17 @@ server <- function(input, output) {
     )
     names(df3) = c("Medidas Descritivas","Valores")
     df3
+    
+    })
+  #Exemplo
+  
+  output$exemplo = renderTable({
+    sender = c(rep('Neylson',4),rep('Silvio',3))
+    receiver = c('Silvio','Maurício','Alexandre','Antônio','Neylson','Dimitri','Ítalo')
+    forca = c(2,3,1,1,2,1,3)
+    df_exemplo = cbind(sender, receiver, forca)
+    colnames(df_exemplo) = c('Maurício','Antônio','2')
+    df_exemplo
   })
 }
 

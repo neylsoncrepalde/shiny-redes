@@ -1,5 +1,8 @@
-# Shiny-Redes - Em desenvolvimento
-Uma aplicação Shiny para Análise de Redes Sociais. Para utilizar é preciso ter instalado o R e o pacote Shiny.
+# Shiny-Redes
+
+**Atualização:** Este *app* está disponível online em https://giars.shinyapps.io/shiny-redes.
+
+Uma aplicação Shiny para Análise de Redes Sociais. Para utilizar em sua máquina é preciso ter instalado o R e o pacote Shiny.
 Para instalar o shiny use `install.packages("shiny", dependencies = T)`.
 
 Para rodar a aplicação, é necessário também instalar 4 outros pacotes, *igraph*, *sand*, *descr* e *ggplot2*. Se não tiver os pacotes instalados use: `install.packages(c("igraph","sand","descr","ggplot2"), dependencies = T)`.
